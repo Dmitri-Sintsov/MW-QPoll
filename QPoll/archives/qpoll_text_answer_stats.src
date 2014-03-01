@@ -1,0 +1,8 @@
+-- field to generate text answers statistics
+ALTER TABLE /*$wgDBprefix*/qp_question_answers
+  ADD COLUMN text_answer_hash binary(36) not NULL,
+  ADD INDEX category_variant (pid,question_id,proposal_id,cat_id,text_answer_hash);
+
+-- populate hash data for text_answer available
+UPDATE /*$wgDBprefix*/qp_question_answers
+  SET text_answer_hash = UNHEX(CONCAT(SHA1(text_answer),MD5(text_answer)));
