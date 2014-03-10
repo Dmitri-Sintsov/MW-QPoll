@@ -1020,8 +1020,8 @@ class qp_PollStore {
 			$structured = $db->addQuotes( $this->interpResult->structured );
 			$attempts = $db->addQuotes(  $this->attempts );
 			$stmt = "INSERT INTO {$qp_users_polls}
-(uid, pid, short_interpretation, long_interpretation, structured_interpretation)
-VALUES ( {$uid}, {$pid}, {$short}, {$long}, {$structured} )
+(uid, pid, attempts, short_interpretation, long_interpretation, structured_interpretation)
+VALUES ( {$uid}, {$pid}, {$attempts}, {$short}, {$long}, {$structured} )
 ON DUPLICATE KEY UPDATE
 attempts = {$attempts}, short_interpretation = {$short} , long_interpretation = {$long}, structured_interpretation = {$structured}";
 			$db->query( $stmt, __METHOD__ );
