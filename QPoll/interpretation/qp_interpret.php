@@ -133,14 +133,6 @@ class qp_Interpret {
 				}
 			}
 		}
-		if ( isset( $result['errmsg'] ) && trim( strval( $result['errmsg'] ) ) != '' ) {
-			# script-generated error message for the whole answer
-			return $interpResult->setError( (string) $result['errmsg'] );
-		}
-		# if there were question/proposal errors, return them;
-		if ( $interpResult->isError() ) {
-			return $interpResult->setDefaultErrorMessage();
-		}
 		$interpCount = 0;
 		foreach ( qp_Setup::$show_interpretation as $interpType => $show ) {
 			if ( isset( $result[$interpType] ) ) {
@@ -149,6 +141,17 @@ class qp_Interpret {
 		}
 		if ( $interpCount == 0 ) {
 			return $interpResult->setError( wfMsg( 'qp_error_interpretation_no_return' ) );
+		}
+		if ( isset( $result['errmsg'] ) && trim( strval( $result['errmsg'] ) ) != '' ) {
+			# script-generated error message for the whole answer
+			$interpResult->setError( (string) $result['errmsg'] );
+		}
+		# if there were question/proposal errors, return them;
+		if ( $interpResult->isError() ) {
+			$interpResult->setDefaultErrorMessage();
+			if ( !$interpResult->storeErroneous ) {
+				return $interpResult;
+			}
 		}
 		$interpResult->structured = isset( $result['structured'] ) ? serialize( $result['structured'] ) : '';
 		if ( strlen( $interpResult->structured ) > qp_Setup::$field_max_len['serialized_interpretation'] ) {
